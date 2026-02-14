@@ -6,13 +6,14 @@ using System;
 
 public static class GameEvents
 {
+    public static Action<int> OnDealDamageEnemy;
     public static Action OnEnemyDead;
-    public static Action<int> OnEnemyHPChanged;
-    public static Action<GameState> OnGameStateChanged;
     public static Action OnRoundStart;
-    public static Action<int> OnGainGold;
+    public static Action<int> OnGiveGold;
     public static Action OnEndGame;
-    public static Action OnCriticalUpgrade;
     public static Action<int> OnStageAdvance;
+    public static Action OnBossDead;
+    public static Action IsBossRound;
+
 
 }

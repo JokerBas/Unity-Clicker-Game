@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class HealthBar : MonoBehaviour
+using TMPro;
+public class EnemyUI : MonoBehaviour
 {
+    public TextMeshProUGUI hpText;
     public Slider healthSlider;
-    // Start is called before the first frame update
     public void SetMaxHealth(int health)
     {
         healthSlider.maxValue = health;
@@ -15,5 +13,9 @@ public class HealthBar : MonoBehaviour
     public void SetHealth(int health)
     {
         healthSlider.value = health;
+    }
+    public void UpdateHP(int hp)
+    {
+        hpText.text = hp + " HP";
     }
 }

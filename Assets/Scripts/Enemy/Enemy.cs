@@ -13,35 +13,31 @@ public class Enemy : MonoBehaviour
     public int baseHP = 10;
     public int maxHP = 10;
     public int currentHP;
+    public bool isBoss = false;
 
     public Slider healthBar;
 
     void Start()
     {
+        if (!gameObject.activeInHierarchy) return;
+        int stage = stageSystem.CurrentStage;
+        maxHP = Calculator.GetEnemyHP(isBoss = true,stage, baseHP);
+        Debug.Log("Enemy Start");
+        currentHP = maxHP;
         healthBar.maxValue = maxHP;
         healthBar.value = currentHP;
-        currentHP = maxHP;
         enemyUI.UpdateHP(currentHP);
     }
     void OnEnable()
     {
-        DamageEvents.OnDealDamageEnemy += TakeDamage;
-        GameEvents.OnRoundStart += ResetEnemy;
-        GameEvents.OnStageAdvance += caculateRewardGold;
+        GameEvents.OnDealDamageEnemy += TakeDamage;
+        GameEvents.OnRoundStart += OnRoundStart;
     }
 
     void OnDisable()
     {
-        DamageEvents.OnDealDamageEnemy -= TakeDamage;
-        GameEvents.OnRoundStart -= ResetEnemy;
-        GameEvents.OnStageAdvance -= caculateRewardGold;
-    }
-
-    void caculateRewardGold(int rewardGold)
-    {
-        int reward = rewardGold * stageSystem.CurrentStage;
-        GameEvents.OnGainGold?.Invoke(reward);
-
+        GameEvents.OnDealDamageEnemy -= TakeDamage;
+        GameEvents.OnRoundStart -= OnRoundStart;
     }
 
     void TakeDamage(int damage)
@@ -58,14 +54,17 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         GameEvents.OnEnemyDead?.Invoke();
-        caculateRewardGold(10);
+        int reward = Calculator.GetGoldReward(stageSystem.CurrentStage);
+        GameEvents.OnGiveGold?.Invoke(reward);
     }
-    public void ResetEnemy()
+    void OnRoundStart()
     {
+        if (!gameObject.activeInHierarchy) return;
         int stage = stageSystem.CurrentStage;
-        maxHP = baseHP * stage;   // สูตรง่ายก่อน
+        maxHP = Calculator.GetEnemyHP(isBoss = true, stage, baseHP);
         currentHP = maxHP;
         healthBar.maxValue = maxHP;
+        healthBar.value = currentHP;
         enemyUI.UpdateHP(currentHP);
     }
 }
