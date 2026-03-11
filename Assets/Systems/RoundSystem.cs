@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RoundSystem : MonoBehaviour
@@ -7,13 +5,8 @@ public class RoundSystem : MonoBehaviour
     public WaveUI waveUI;
     public StageSystem stageSystem;
     public int currentRound = 1;
-    public int wavescount = 0;
-    private int wavesPerRound = 5;
-
-    void Update()
-    {
-        waveUI.UpdateWave(wavescount);
-    }
+    public int wavesCount = 0;
+    private const int WavesPerRound = 5;
 
     public void PreviousRound()
     {
@@ -24,23 +17,28 @@ public class RoundSystem : MonoBehaviour
     public void NextRound()
     {
         currentRound++;
-        wavescount = 1;
+        wavesCount = 1;
+        waveUI.UpdateWave(wavesCount, WavesPerRound);
     }
 
     public void ResetRound()
     {
         currentRound = 1;
-        wavescount = 0;
+        wavesCount = 0;
+        waveUI.UpdateWave(wavesCount, WavesPerRound);
     }
+
     public void StartRound()
     {
-        wavescount++;
-        if (wavescount > wavesPerRound)
+        wavesCount++;
+        waveUI.UpdateWave(wavesCount, WavesPerRound);
+
+        if (wavesCount > WavesPerRound)
         {
             stageSystem.NextStage();
             NextRound();
         }
+
         GameEvents.OnRoundStart?.Invoke();
     }
-
 }

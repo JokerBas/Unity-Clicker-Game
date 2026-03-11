@@ -1,57 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UpgradeSystem : MonoBehaviour
 {
     public ButtonUI buttonUI;
     public PlayerStats playerStats;
-    bool isUpgrading = false;
+
+    void Start()
+    {
+        RefreshUI();
+    }
+
     private int CalculateUpgradeCost(int currentLevel)
     {
-        int baseCost = 10;
-        float growthRate = 1.15f;
+        const int baseCost = 10;
+        const float growthRate = 1.15f;
         return Mathf.FloorToInt(baseCost * Mathf.Pow(growthRate, currentLevel - 1));
     }
 
-    void Update()
-    {
-        if (isUpgrading)
-        {
-            buttonUI.UpdatePrice(CalculateUpgradeCost(playerStats.clickDamage));
-            buttonUI.UpdateGainDamage(playerStats.clickDamage);
-            isUpgrading = false;
-        }
-    }
     public void UpgradeClickDamage()
     {
         int nextLevel = playerStats.clickDamage + 1;
         int cost = CalculateUpgradeCost(nextLevel);
-        if (playerStats.gold >= cost)
-        {
-            isUpgrading = true;
-            playerStats.gold -= cost;
-            playerStats.UpgradeClick();
-            if (nextLevel % 5 == 0)
-            {
-                playerStats.clickDamage += 5;
-            }
-        }
+
+        if (playerStats.gold < cost)
+            return;
+
+        playerStats.SpendGold(cost);
+        playerStats.UpgradeClick();
+
+        // Milestone bonus every 5 levels
+        if (nextLevel % 5 == 0)
+            playerStats.clickDamage += 5;
+
+        RefreshUI();
     }
+
     public void UpgradeAutoDamage()
     {
         int nextLevel = playerStats.autoDamage + 1;
         int cost = CalculateUpgradeCost(nextLevel);
-        if (playerStats.gold >= cost)
-        {
-            isUpgrading = true;
-            playerStats.gold -= cost;
-            playerStats.UpgradeAuto();
-            if (nextLevel % 5 == 0)
-            {
-                playerStats.autoDamage += 5;
-            }
-        }
+
+        if (playerStats.gold < cost)
+            return;
+
+        playerStats.SpendGold(cost);
+        playerStats.UpgradeAuto();
+
+        // Milestone bonus every 5 levels
+        if (nextLevel % 5 == 0)
+            playerStats.autoDamage += 5;
+
+        RefreshUI();
     }
-    
+
+    private void RefreshUI()
+    {
+        buttonUI.UpdatePrice(CalculateUpgradeCost(playerStats.clickDamage));
+        buttonUI.UpdateGainDamage(playerStats.clickDamage);
+    }
 }

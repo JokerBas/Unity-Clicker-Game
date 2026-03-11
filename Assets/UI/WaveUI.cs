@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -7,8 +5,8 @@ public class WaveUI : MonoBehaviour
 {
     public TextMeshProUGUI waveText;
 
-    public void UpdateWave(int wavescount)
+    public void UpdateWave(int current, int max)
     {
-        waveText.text = wavescount + "/5";
+        waveText.text = $"Wave {current}/{max}";
     }
 }

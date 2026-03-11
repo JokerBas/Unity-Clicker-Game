@@ -1,10 +1,3 @@
-// หน้าที่:
-// - เก็บพลังทั้งหมดของผู้เล่น
-// - clickDamage / autoDamage
-// - upgrade จะมาที่นี่ทั้งหมด
-// - ? ไม่รู้ enemy
-// - ? ไม่รู้ UI
-using System;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
@@ -14,32 +7,49 @@ public class PlayerStats : MonoBehaviour
     public int autoDamage = 1;
     public int gold = 0;
 
-    void Update()
+    void Start()
     {
-        playerUI.UpdateGold(gold);
-        playerUI.UpdateDamage(clickDamage);
-        playerUI.UpdateAutoDamage(autoDamage);
+        RefreshUI();
     }
-     void OnEnable()
-     {
+
+    void OnEnable()
+    {
         GameEvents.OnGainGold += GainGold;
-     }
-     void OnDisable()
-     {
+    }
+
+    void OnDisable()
+    {
         GameEvents.OnGainGold -= GainGold;
-     }
+    }
 
     public void UpgradeClick()
     {
         clickDamage++;
+        playerUI.UpdateDamage(clickDamage);
     }
 
     public void UpgradeAuto()
     {
         autoDamage++;
+        playerUI.UpdateAutoDamage(autoDamage);
     }
+
     public void GainGold(int amount)
     {
         gold += amount;
+        playerUI.UpdateGold(gold);
+    }
+
+    public void SpendGold(int amount)
+    {
+        gold -= amount;
+        playerUI.UpdateGold(gold);
+    }
+
+    private void RefreshUI()
+    {
+        playerUI.UpdateGold(gold);
+        playerUI.UpdateDamage(clickDamage);
+        playerUI.UpdateAutoDamage(autoDamage);
     }
 }

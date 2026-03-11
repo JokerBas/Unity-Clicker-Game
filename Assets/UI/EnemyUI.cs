@@ -1,11 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+
 public class EnemyUI : MonoBehaviour
 {
     public TextMeshProUGUI hpText;
-    public void UpdateHP(int hp)
+
+    public void UpdateHP(int currentHP, int maxHP)
     {
-        hpText.text = hp + " HP";
+        hpText.text = $"{currentHP} / {maxHP}";
     }
 }
